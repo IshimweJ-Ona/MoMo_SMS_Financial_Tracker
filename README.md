@@ -3,7 +3,7 @@
    ## Team members:
                    - ISHIMWE Jonathan 
                    - ARNOLD ELOI BUYANGE MUVUNYI
-                   - Gedeon
+                   - Gedeon Ntigibeshya
 ----------------------------------
 ## Project Description
 **MoMo_SMS_Financial_Tracker** is a web application on enterprise level application designed

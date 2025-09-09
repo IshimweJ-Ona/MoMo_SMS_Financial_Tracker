@@ -1,5 +1,5 @@
 ## MoMo_SMS_Finacial_Tracker
-   ## Team name:
+   ## Team name: Team 11
    ## Team members:
                    - ISHIMWE Jonathan 
                    - ARNOLD ELOI BUYANGE MUVUNYI

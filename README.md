@@ -22,15 +22,15 @@ We use Jira practices to manage our development workflow.
 --Link to scrum board 
 [ https://alustudent-team-pch2djpv.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiYWRjYWYxMTNlNmYyNDZjNDlhYzE2ODkxYTNkMmE5N2UiLCJwIjoiaiJ9 ]
 
-**Initial tasks**
--Setup GitHub repository
--Add team members
--Create architecture diagram
--Research XML parsing
--Draft ETL pipeline
--Set up database 
--Build a static dashboard
--Write unit tests
+**Initial tasks:**
+ -Setup GitHub repository
+ -Add team members
+ -Create architecture diagram
+ -Research XML parsing
+ -Draft ETL pipeline
+ -Set up database 
+ -Build a static dashboard
+ -Write unit tests
 
 -----------------------------------------
 

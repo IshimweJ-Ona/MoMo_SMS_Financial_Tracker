@@ -2,7 +2,7 @@
 
 ## Team Members
 - Gedeon NTIGIBESHYA
-- 
+- Arnold Eloi Buyange Muvunyi 
 
 ## Description
 A financial transaction tracking system for Mobile Money (MoMo) SMS messages. This project includes database schema, JSON API examples, and CRUD operations for managing financial transactions.

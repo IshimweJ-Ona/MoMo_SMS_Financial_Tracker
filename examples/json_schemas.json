@@ -1,0 +1,32 @@
+{
+  "user": {
+    "user_id": 1,
+    "name": "Alice",
+    "phone": "0788000001",
+    "email": "alice@example.com"
+  },
+  "transaction": {
+    "transaction_id": 1,
+    "amount": 15000.00,
+    "txn_date": "2025-09-18T15:00:00Z",
+    "status": "completed",
+    "raw_message": "Sample: Send from 0788000001 to 0788000002",
+    "category": {
+      "category_id": 1,
+      "category_name": "Send Money"
+    },
+    "counterparty": {
+      "user_id": 2,
+      "name": "Bob",
+      "phone": "0788000002"
+    }
+  },
+  "logs": [
+    {
+      "log_id": 1,
+      "action": "INSERT",
+      "timestamp": "2025-09-18T15:01:00Z",
+      "notes": "Imported from XML"
+    }
+  ]
+}

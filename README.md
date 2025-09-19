@@ -78,8 +78,14 @@ See the project documentation for:
 - Security constraints and validation rules
 - Index recommendations for performance
 
-## Scrum Board
-[Link to be added]
+## System Architecture
+We used a web application 'Draw.io' to construct the functionality of the app
+The diagram illustrates full data flow from APIs and SMS XML ingestion to frontend visualisation.
+--Link to the architecture diagram
+ [https://drive.google.com/file/d/1HsT7zy_rY5yrXu_hj6QoLXynkAvLYqsi/view?usp=sharing]
 
-## License
-MIT
+## ERD Diagram Design
+[https://drive.google.com/file/d/1C4vF6A7KHkcdj6qKuPrMPtjd5aZPzCfP/view?ts=68cd1754]
+
+## Scrum Board
+[https://alustudent-team-pch2djpv.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiNTdiNTU5YTJiNzEyNDJiYzk0MmQxOTQ3M2YwNzVjZWYiLCJwIjoiaiJ9]

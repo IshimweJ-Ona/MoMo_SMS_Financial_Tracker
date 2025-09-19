@@ -1,7 +1,8 @@
 # MoMo SMS Financial Tracker
 
 ## Team Members
-- Gedeon
+- Gedeon NTIGIBESHYA
+- 
 
 ## Description
 A financial transaction tracking system for Mobile Money (MoMo) SMS messages. This project includes database schema, JSON API examples, and CRUD operations for managing financial transactions.

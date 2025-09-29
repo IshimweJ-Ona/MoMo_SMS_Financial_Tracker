@@ -22,7 +22,7 @@ class SearchComparison:
     
     def compare_search_methods(self, search_ids):
         """Compare linear search vs dictionary lookup"""
-        print("🔍 Comparing Search Algorithms...\n")
+        print("Comparing Search Algorithms...\n")
         
         results = []
         
@@ -54,7 +54,7 @@ class SearchComparison:
         test_ids = [txn['id'] for txn in self.transactions[:20]]
         
         print("=" * 50)
-        print("📊 DSA SEARCH ALGORITHM ANALYSIS REPORT")
+        print("DSA SEARCH ALGORITHM ANALYSIS REPORT")
         print("=" * 50)
         
         print(f"Total transactions in dataset: {len(self.transactions)}")
@@ -68,19 +68,19 @@ class SearchComparison:
         total_dict_time = sum(r['dictionary_lookup_time'] for r in results)
         avg_speedup = total_linear_time / total_dict_time if total_dict_time > 0 else 0
         
-        print("📈 PERFORMANCE SUMMARY:")
+        print("PERFORMANCE SUMMARY:")
         print(f"Total Linear Search Time: {total_linear_time:.6f} seconds")
         print(f"Total Dictionary Lookup Time: {total_dict_time:.6f} seconds")
         print(f"Average Speedup: {avg_speedup:.2f}x faster")
         print()
         
-        print("🤔 WHY DICTIONARY LOOKUP IS FASTER:")
+        print("WHY DICTIONARY LOOKUP IS FASTER:")
         print("• Linear Search: O(n) time complexity - checks each element one by one")
         print("• Dictionary Lookup: O(1) average case - direct access via hash table")
         print("• Hash tables use mathematical functions to compute memory locations")
         print()
         
-        print("💡 ALTERNATIVE DATA STRUCTURES FOR IMPROVEMENT:")
+        print("ALTERNATIVE DATA STRUCTURES FOR IMPROVEMENT:")
         print("1. Binary Search Tree (BST): O(log n) search time, maintains order")
         print("2. B-Trees: Efficient for large datasets stored on disk")
         print("3. Hash Tables with Better Hash Functions: Reduce collisions")
@@ -88,7 +88,7 @@ class SearchComparison:
         print("5. Trie: Excellent for prefix-based searches (not applicable here)")
         print()
         
-        print("🎯 RECOMMENDATION:")
+        print("RECOMMENDATION:")
         print("For this use case, Dictionary/Hash Table is optimal because:")
         print("• We need fast lookups by transaction ID")
         print("• Memory usage is acceptable for the dataset size")
@@ -100,7 +100,7 @@ def main():
     transactions = parser.parse_xml()
     
     if not transactions:
-        print("❌ No transactions found. Please check your XML file.")
+        print("No transactions found. Please check your XML file.")
         return
     
     # Run analysis

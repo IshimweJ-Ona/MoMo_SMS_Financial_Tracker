@@ -1,161 +1,100 @@
-# MoMo SMS Financial Tracker
+# MoMo SMS Financial Tracker API
 
-## Team Members
-- Gedeon NTIGIBESHYA
-- Arnold Eloi Buyange Muvunyi 
-
-## Description
-A financial transaction tracking system for Mobile Money (MoMo) SMS messages. This project includes database schema, JSON API examples, and CRUD operations for managing financial transactions.
+This project builds a simple REST API in plain Python (`http.server`) to expose parsed MoMo SMS transaction data, secured with Basic Auth. It also includes a small DSA comparison between linear search and dictionary lookup.
 
 ## Project Structure
-```
-MoMo_SMS_Financial_Tracker/
-├── database/
-│   └── database_setup.sql    # MySQL database schema and sample data
-├── examples/
-│   └── json_schemas.json     # API response examples
-└── README.md
-```
+- `data/modified_sms_v2.xml` — input dataset (place here)
+- `dsa/parser.py` — XML -> JSON parser
+- `api/datastore.py` — in-memory store (list + dict index) and CRUD
+- `api/server.py` — HTTP API with Basic Auth
+- `dsa/dsa_compare.py` — linear vs dict lookup timing
+- `docs/api_docs.md` — endpoint docs with examples
+- `screenshots/` — place testing screenshots
 
-## Database Setup
+## Requirements
+- Python 3.9+
+- Windows PowerShell or any shell
 
-### Prerequisites
-- MySQL Server 8.0+
-
-### Installation (Ubuntu/Pop!_OS)
+## Setup
+1. Put your dataset file at `data/modified_sms_v2.xml`.
+2. Optionally pre-generate JSON for faster startup:
 ```bash
-sudo apt update
-sudo apt install mysql-server
-sudo systemctl start mysql
+python dsa/parser.py
 ```
+This writes `data/parsed_sms.json`.
 
-### Run Database Setup
+## Run the API
 ```bash
-# Using maintenance account (recommended)
-sudo mysql --defaults-file=/etc/mysql/debian.cnf < database/database_setup.sql
-
-# Or with root password (if configured)
-mysql -u root -p < database/database_setup.sql
+python api/server.py
 ```
+Server runs on `http://127.0.0.1:8000`.
 
-### Verify Installation
-```bash
-sudo mysql --defaults-file=/etc/mysql/debian.cnf -e "USE momo_tracker; SHOW TABLES;"
-```
-
-## Database Schema
-
-### Tables
-- **Users**: User information (name, phone, email)
-- **Transaction_Categories**: Transaction types (Send Money, Withdraw, etc.)
-- **Transactions**: Financial transactions with sender/receiver relationships
-- **System_Logs**: Audit trail for transaction operations
-
-### Key Features
-- Foreign key constraints for data integrity
-- Auto-incrementing primary keys
-- Unique phone number constraint
-- Decimal precision for monetary amounts
-- Timestamp tracking for all operations
-
-## JSON API Examples
-
-See `examples/json_schemas.json` for sample API response structures showing how transaction data would be returned by the system.
-
-## Running the local API
-
-1) Start the server
-
-```bash
-python -m api.server
-```
-
-The server will load `api/modified_sms_v2.xml` via the datastore, parse it into transactions, and expose CRUD endpoints.
-
-2) Authentication (Basic Auth)
-
+Auth credentials:
 - Username: `admin`
 - Password: `password123`
 
-Send the `Authorization: Basic <base64(admin:password123)>` header with requests. Invalid or missing credentials return `401` with `WWW-Authenticate` header.
-
-Limitations: Basic Auth sends credentials with each request and is not encrypted by itself. Use HTTPS in production, rotate credentials, and prefer token-based auth for stronger security.
-
-3) Endpoints
-
-- GET `/transactions` → 200 OK, returns array of transactions
-- GET `/transactions/{id}` → 200 OK with object, or 404 if not found
-- POST `/transactions` → 201 Created, body fields: `transaction_type` (str), `amount` (number), `sender` (str), `receiver` (str), `timestamp` (ISO str). Returns created object with `id`.
-- PUT `/transactions/{id}` → 200 OK with updated object, or 404 if not found
-- DELETE `/transactions/{id}` → 204 No Content on success, 404 if not found
-
-4) Errors
-
-- 400 Bad Request: Malformed JSON body
-- 401 Unauthorized: Missing/invalid Basic Auth
-- 404 Not Found: Unknown route or missing resource
-
-## Data Ingestion from XML
-
-- Source file: `api/modified_sms_v2.xml` (1693 messages)
-- Parser: `api/data_parser.py` (`SMSDataParser`)
-- Store: `api/datastore.py` loads XML on first run and caches to `api/transactions.json` for faster subsequent loads.
-
-Key parsed fields per transaction:
-- `id` (from SMS or auto-generated)
-- `transaction_type` (`received`, `sent`, `withdrawal`, `deposit`, `unknown`)
-- `amount` (float)
-- `sender`, `receiver` (best-effort extraction from SMS body)
-- `timestamp` (ISO 8601 when convertible)
-
-## DSA Integration & Testing
-
-Two lookup methods are implemented in `api/datastore.py`:
-- Linear search: `linear_search_by_id`
-- Dictionary lookup: `dict_lookup_by_id`
-
-To run the comparison test:
-
+## Test with curl
+- List:
 ```bash
-python -m dsa.dsa_compare
+curl -u admin:password123 http://127.0.0.1:8000/transactions
+```
+- Unauthorized:
+```bash
+curl http://127.0.0.1:8000/transactions -i
+```
+- Create:
+```bash
+curl -u admin:password123 -X POST http://127.0.0.1:8000/transactions \
+  -H "Content-Type: application/json" \
+  -d '{"transaction_type":"deposit","amount":12.34,"sender":"alice","receiver":"momo","timestamp":"2024-09-01T10:00:00Z"}'
+```
+- Update:
+```bash
+curl -u admin:password123 -X PUT http://127.0.0.1:8000/transactions/1 \
+  -H "Content-Type: application/json" -d '{"amount":99.99}'
+```
+- Delete:
+```bash
+curl -u admin:password123 -X DELETE http://127.0.0.1:8000/transactions/1 -i
 ```
 
-This prints average timings for 20 sample IDs, demonstrating dictionary lookup is faster (O(1) average) than linear search (O(n)).
+## Run DSA Comparison
+```bash
+python dsa/dsa_compare.py
+```
+Outputs average timings and an observation. Ensure at least 20 records exist (script will add test records if needed).
 
-## API Test Script
+## Screenshots to Include
+Save to `screenshots/`:
+- Successful GET with authentication
+- Unauthorized request (missing/invalid credentials)
+- Successful POST, PUT, DELETE
 
-Use the helper tester to validate endpoints and auth flows:
+## Running the API
 
 ```bash
-python -m api.api_tester
+python API/server.py
 ```
 
-It verifies: unauthorized access handling, list/get, create, update, and delete flows end-to-end.
+Server runs on `http://127.0.0.1:8000`.
 
-## CRUD Operations
+Auth credentials:
+- Username: `admin`
+- Password: `password123`
 
-The database supports full CRUD operations:
-- **CREATE**: Insert new users and transactions
-- **READ**: Query users, transactions, and logs
-- **UPDATE**: Modify transaction status and user information
-- **DELETE**: Remove users and transactions
+## Security Discussion (for report)
+- Basic Auth is weak without TLS; credentials can be intercepted and are reused on every request.
+- Prefer JWT or OAuth2 for stronger security, token rotation, and scoped access.
 
-## Design Document
+## Key Features
+- Complete XML parsing to JSON with all required fields
+- Full CRUD API endpoints (GET, POST, PUT, DELETE)
+- Basic Authentication implementation with security analysis
+- Comprehensive API documentation with examples and error codes
+- DSA integration comparing linear search vs dictionary lookup with performance testing
+- Database design with ERD and documentation
 
-See the project documentation for:
-- Entity Relationship Diagram (ERD)
-- Data dictionary with column descriptions
-- Security constraints and validation rules
-- Index recommendations for performance
-
-## System Architecture
-We used a web application 'Draw.io' to construct the functionality of the app
-The diagram illustrates full data flow from APIs and SMS XML ingestion to frontend visualisation.
---Link to the architecture diagram
- [https://drive.google.com/file/d/1HsT7zy_rY5yrXu_hj6QoLXynkAvLYqsi/view?usp=sharing]
-
-## ERD Diagram Design
-[https://drive.google.com/file/d/1C4vF6A7KHkcdj6qKuPrMPtjd5aZPzCfP/view?ts=68cd1754]
-
-## Scrum Board
-[https://alustudent-team-pch2djpv.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiNTdiNTU5YTJiNzEyNDJiYzk0MmQxOTQ3M2YwNzVjZWYiLCJwIjoiaiJ9]
+## Project Links
+- System Architecture: [https://drive.google.com/file/d/1HsT7zy_rY5yrXu_hj6QoLXynkAvLYqsi/view?usp=sharing]
+- ERD Diagram: [https://drive.google.com/file/d/1C4vF6A7KHkcdj6qKuPrMPtjd5aZPzCfP/view?ts=68cd1754]
+- Scrum Board: [https://alustudent-team-pch2djpv.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiNTdiNTU5YTJiNzEyNDJiYzk0MmQxOTQ3M2YwNzVjZWYiLCJwIjoiaiJ9]

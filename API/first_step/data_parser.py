@@ -1,0 +1,94 @@
+import xml.etree.ElementTree as ET
+import json
+from datetime import datetime
+
+class SMSDataParser:
+    def __init__(self, xml_file_path):
+        self.xml_file_path = xml_file_path
+        self.transactions = []
+    
+    def parse_xml(self):
+        """Parse XML file and convert to list of dictionaries"""
+        try:
+            tree = ET.parse(self.xml_file_path)
+            root = tree.getroot()
+            
+            for sms in root.findall('sms'):
+                transaction = {
+                    'id': int(sms.get('id', 0)),
+                    'address': sms.get('address', ''),
+                    'body': sms.get('body', ''),
+                    'read_state': sms.get('read_state', '0'),
+                    'date': sms.get('date', ''),
+                    'type': sms.get('type', ''),
+                    'transaction_type': self.extract_transaction_type(sms.get('body', '')),
+                    'amount': self.extract_amount(sms.get('body', '')),
+                    'sender': self.extract_sender(sms.get('body', '')),
+                    'receiver': self.extract_receiver(sms.get('body', '')),
+                    'timestamp': self.convert_timestamp(sms.get('date', ''))
+                }
+                self.transactions.append(transaction)
+            
+            return self.transactions
+        except Exception as e:
+            print(f"Error parsing XML: {e}")
+            return []
+    
+    def extract_transaction_type(self, body):
+        """Extract transaction type from SMS body"""
+        body_lower = body.lower()
+        if 'sent' in body_lower:
+            return 'sent'
+        elif 'received' in body_lower:
+            return 'received'
+        elif 'withdraw' in body_lower:
+            return 'withdrawal'
+        elif 'deposit' in body_lower:
+            return 'deposit'
+        else:
+            return 'unknown'
+    
+    def extract_amount(self, body):
+        """Extract amount from SMS body"""
+        import re
+        amounts = re.findall(r'[\d,]+\.?\d*', body)
+        return float(amounts[0].replace(',', '')) if amounts else 0.0
+    
+    def extract_sender(self, body):
+        """Extract sender from SMS body"""
+        # Simple extraction - you can improve this based on your SMS format
+        if 'from' in body.lower():
+            parts = body.lower().split('from')
+            if len(parts) > 1:
+                return parts[1].split()[0] if parts[1].split() else "Unknown"
+        return "Unknown"
+    
+    def extract_receiver(self, body):
+        """Extract receiver from SMS body"""
+        # Simple extraction - you can improve this based on your SMS format
+        if 'to' in body.lower():
+            parts = body.lower().split('to')
+            if len(parts) > 1:
+                return parts[1].split()[0] if parts[1].split() else "Unknown"
+        return "Unknown"
+    
+    def convert_timestamp(self, timestamp_str):
+        """Convert timestamp to readable format"""
+        try:
+            timestamp = int(timestamp_str)
+            return datetime.fromtimestamp(timestamp/1000).isoformat()
+        except:
+            return timestamp_str
+    
+    def save_to_json(self, output_file='transactions.json'):
+        """Save parsed data to JSON file"""
+        with open(output_file, 'w') as f:
+            json.dump(self.transactions, f, indent=2)
+        print(f"Data saved to {output_file}")
+
+# Test the parser
+if __name__ == '__main__':
+    parser = SMSDataParser('modified_sms_v2.xml')
+    transactions = parser.parse_xml()
+    print(f"Parsed {len(transactions)} transactions")
+    parser.save_to_json()

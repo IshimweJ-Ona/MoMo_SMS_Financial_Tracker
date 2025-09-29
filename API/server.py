@@ -4,7 +4,7 @@ import re
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from api.datastore import load_default_store
+from datastore import load_default_store
 
 USERNAME = "admin"
 PASSWORD = "password123"

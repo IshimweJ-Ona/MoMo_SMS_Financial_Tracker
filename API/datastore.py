@@ -1,12 +1,10 @@
 import os
 import json
 
-# Use the robust parser that extracts fields from SMS body text
-from api.data_parser import SMSDataParser
-
-
-XML_FILE_PATH = os.path.join(os.path.dirname(__file__), "modified_sms_v2.xml")
-PARSED_JSON = os.path.join(os.path.dirname(__file__), "transactions.json")
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from dsa.parser import parse_sms_xml, DATA_DIR
 
 
 class InMemoryStore:
@@ -16,9 +14,7 @@ class InMemoryStore:
         self._next_id = 1
 
     def load_from_xml(self, file_path=None):
-        xml_path = file_path or XML_FILE_PATH
-        parser = SMSDataParser(xml_path)
-        records = parser.parse_xml()
+        records = parse_sms_xml(file_path) if file_path else parse_sms_xml()
         self.transactions = []
         self.id_to_transaction = {}
         for record in records:
@@ -42,12 +38,6 @@ class InMemoryStore:
             }
             self.transactions.append(tx)
             self.id_to_transaction[tx_id] = tx
-        # Cache to JSON for faster subsequent loads
-        try:
-            with open(PARSED_JSON, "w", encoding="utf-8") as f:
-                json.dump(self.transactions, f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
 
     def _generate_id(self):
         new_id = str(self._next_id)
@@ -109,6 +99,9 @@ class InMemoryStore:
     def dict_lookup_by_id(self, tx_id):
         return self.id_to_transaction.get(str(tx_id))
 
+
+PARSED_JSON = os.path.join(DATA_DIR, "parsed_sms.json")
+
 def load_default_store():
     store = InMemoryStore()
     if os.path.exists(PARSED_JSON):
@@ -132,5 +125,5 @@ def load_default_store():
         except Exception:
             store.load_from_xml()
     else:
-        store.load_from_xml()
+        store.load_from_xml("c:\\Users\\angeg\\OneDrive\\Bureau\\MyclassProject\\SMSProject\\MoMo_SMS_Financial_Tracker\\data\\modified_sms_v2.xml")
     return store

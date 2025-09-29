@@ -43,16 +43,16 @@ def test_authentication():
     # Test with valid credentials
     status, data = make_request("GET", "/transactions", auth=True)
     if status == 200:
-        print("✅ Valid credentials accepted")
+        print(" Valid credentials accepted")
     else:
-        print(f"❌ Valid credentials failed: {status}")
+        print(f" Valid credentials failed: {status}")
     
     # Test without credentials
     status, data = make_request("GET", "/transactions", auth=False)
     if status == 401:
-        print("✅ Invalid credentials rejected")
+        print(" Invalid credentials rejected")
     else:
-        print(f"❌ Invalid credentials not rejected: {status}")
+        print(f" Invalid credentials not rejected: {status}")
 
 def test_get_transactions():
     """Test GET /transactions"""
@@ -61,10 +61,10 @@ def test_get_transactions():
     
     if status == 200:
         transactions = json.loads(data)
-        print(f"✅ GET /transactions successful - {len(transactions)} transactions found")
+        print(f" GET /transactions successful - {len(transactions)} transactions found")
         return transactions
     else:
-        print(f"❌ GET /transactions failed: {status}")
+        print(f" GET /transactions failed: {status}")
         return []
 
 def test_get_single_transaction(tx_id):
@@ -74,10 +74,10 @@ def test_get_single_transaction(tx_id):
     
     if status == 200:
         transaction = json.loads(data)
-        print(f"✅ GET /transactions/{tx_id} successful")
+        print(f" GET /transactions/{tx_id} successful")
         return transaction
     else:
-        print(f"❌ GET /transactions/{tx_id} failed: {status}")
+        print(f" GET /transactions/{tx_id} failed: {status}")
         return None
 
 def test_create_transaction():
@@ -95,10 +95,10 @@ def test_create_transaction():
     
     if status == 201:
         transaction = json.loads(data)
-        print(f"✅ POST /transactions successful - created ID {transaction['id']}")
+        print(f" POST /transactions successful - created ID {transaction['id']}")
         return transaction
     else:
-        print(f"❌ POST /transactions failed: {status}")
+        print(f" POST /transactions failed: {status}")
         return None
 
 def test_update_transaction(tx_id):
@@ -110,10 +110,10 @@ def test_update_transaction(tx_id):
     
     if status == 200:
         transaction = json.loads(data)
-        print(f"✅ PUT /transactions/{tx_id} successful")
+        print(f" PUT /transactions/{tx_id} successful")
         return transaction
     else:
-        print(f"❌ PUT /transactions/{tx_id} failed: {status}")
+        print(f" PUT /transactions/{tx_id} failed: {status}")
         return None
 
 def test_delete_transaction(tx_id):
@@ -122,10 +122,10 @@ def test_delete_transaction(tx_id):
     status, data = make_request("DELETE", f"/transactions/{tx_id}")
     
     if status == 204:
-        print(f"✅ DELETE /transactions/{tx_id} successful")
+        print(f" DELETE /transactions/{tx_id} successful")
         return True
     else:
-        print(f"❌ DELETE /transactions/{tx_id} failed: {status}")
+        print(f" DELETE /transactions/{tx_id} failed: {status}")
         return False
 
 def main():

@@ -178,15 +178,15 @@ def run_server(port=8000):
     server.transactions = transactions
     server.transactions_dict = transactions_dict
     
-    print(f'🚀 Server running on http://localhost:{port}')
-    print('📝 Available endpoints:')
+    print(f'Server running on http://localhost:{port}')
+    print('Available endpoints:')
     print('   GET    /transactions')
     print('   GET    /transactions/{id}')
     print('   POST   /transactions')
     print('   PUT    /transactions/{id}')
     print('   DELETE /transactions/{id}')
     print('')
-    print('🔐 Authentication:')
+    print('Authentication:')
     print('   Username: admin, Password: password123')
     print('   Username: user,  Password: user123')
     print('')
@@ -195,7 +195,7 @@ def run_server(port=8000):
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n🛑 Server stopped")
+        print("\nServer stopped")
         server.server_close()
 
 if __name__ == '__main__':

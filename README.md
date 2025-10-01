@@ -1,3 +1,28 @@
+## Team 11
+
+## Team members
+
+1. NTIGIBESHYA Gedeon
+2. Arnold Eloi Buyange Muvunyi
+
+## Project Description
+**MoMo_SMS_Financial_Tracker** is a web application on enterprise level application designed
+to process mobile money (MoMo) SMS data in XML format. The system extracts, categorises and stores transactions in relational database, then visualizes it through a dashboard.
+This web app helps users to analyse their financial activity and spendings in clarity and precision.
+
+
+## System Architecture
+We used a web application 'Draw.io' to construct the functionality of the app
+The diagram illustrates full data flow from APIs and SMS XML ingestion to frontend visualisation.
+--Link to the architecture diagram
+ [https://drive.google.com/file/d/1HsT7zy_rY5yrXu_hj6QoLXynkAvLYqsi/view?usp=sharing]
+
+## ERD Diagram Design
+[https://drive.google.com/file/d/1C4vF6A7KHkcdj6qKuPrMPtjd5aZPzCfP/view?ts=68cd1754]
+
+## Scrum Board
+[https://alustudent-team-pch2djpv.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiNTdiNTU5YTJiNzEyNDJiYzk0MmQxOTQ3M2YwNzVjZWYiLCJwIjoiaiJ9]
+
 # MoMo SMS Financial Tracker API
 
 This project builds a simple REST API in plain Python (`http.server`) to expose parsed MoMo SMS transaction data, secured with Basic Auth. It also includes a small DSA comparison between linear search and dictionary lookup.

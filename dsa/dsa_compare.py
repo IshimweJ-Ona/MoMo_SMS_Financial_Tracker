@@ -2,9 +2,6 @@ import random
 import time
 from statistics import mean
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from API.datastore import load_default_store
 
 

@@ -1,32 +1,297 @@
 {
-  "user": {
-    "user_id": 1,
-    "name": "Alice",
-    "phone": "0788000001",
-    "email": "alice@example.com"
-  },
-  "transaction": {
-    "transaction_id": 1,
-    "amount": 15000.00,
-    "txn_date": "2025-09-18T15:00:00Z",
-    "status": "completed",
-    "raw_message": "Sample: Send from 0788000001 to 0788000002",
-    "category": {
-      "category_id": 1,
-      "category_name": "Send Money"
+  "json_schemas": {
+    "description": "JSON schemas for MoMo SMS Financial Tracker based on database_setup.sql",
+    "version": "1.0.0",
+    "database_alignment": "Matches database/database_setup.sql structure",
+    "schemas": {
+      "user": {
+        "type": "object",
+        "description": "User account information from Users table",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Unique user identifier (AUTO_INCREMENT PRIMARY KEY)"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Full name of the user"
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 20,
+            "pattern": "^[0-9]{10,15}$",
+            "description": "Phone number used in MoMo (unique)"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 100,
+            "format": "email",
+            "description": "Optional user email address"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "User creation timestamp"
+          }
+        },
+        "required": ["user_id", "name", "phone"],
+        "example": {
+          "user_id": 1,
+          "name": "Alice Johnson",
+          "phone": "0788000001",
+          "email": "alice@example.com",
+          "created_at": "2025-10-02T10:00:00Z"
+        }
+      },
+      "transaction_category": {
+        "type": "object",
+        "description": "Transaction type classifications from Transaction_Categories table",
+        "properties": {
+          "cat_id": {
+            "type": "integer",
+            "description": "Unique category identifier"
+          },
+          "cat_name": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Name of transaction category"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Detailed description of the category"
+          },
+          "is_active": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether category is currently active"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Category creation timestamp"
+          }
+        },
+        "required": ["cat_id", "cat_name"],
+        "example": {
+          "cat_id": 1,
+          "cat_name": "Send Money",
+          "description": "Peer to peer money transfer",
+          "is_active": true,
+          "created_at": "2025-10-02T10:00:00Z"
+        }
+      },
+      "transaction": {
+        "type": "object",
+        "description": "Core financial transaction records from Transactions table",
+        "properties": {
+          "txn_id": {
+            "type": "integer",
+            "description": "Unique transaction identifier (AUTO_INCREMENT PRIMARY KEY)"
+          },
+          "sender_id": {
+            "type": "integer",
+            "description": "User ID of transaction sender (FOREIGN KEY to Users)"
+          },
+          "receiver_id": {
+            "type": "integer",
+            "description": "User ID of transaction receiver (FOREIGN KEY to Users)"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0.01,
+            "description": "Transaction amount (must be positive)"
+          },
+          "txn_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction timestamp"
+          },
+          "category_id": {
+            "type": "integer",
+            "description": "Transaction category reference (FOREIGN KEY)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "completed", "failed", "cancelled", "reconciled"],
+            "default": "pending",
+            "description": "Transaction status"
+          },
+          "raw_message": {
+            "type": "string",
+            "description": "Original SMS message content"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Record creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": ["txn_id", "sender_id", "receiver_id", "amount", "txn_date"],
+        "example": {
+          "txn_id": 1,
+          "sender_id": 1,
+          "receiver_id": 2,
+          "amount": 15000.00,
+          "txn_date": "2025-10-02T15:30:00Z",
+          "category_id": 1,
+          "status": "completed",
+          "raw_message": "TxId: 73214484437. Your payment of 15,000 RWF to Jane Smith has been completed...",
+          "created_at": "2025-10-02T15:30:00Z",
+          "updated_at": "2025-10-02T15:30:00Z"
+        }
+      },
+      "system_log": {
+        "type": "object",
+        "description": "Audit trail from System_Logs table",
+        "properties": {
+          "log_id": {
+            "type": "integer",
+            "description": "Unique log identifier (AUTO_INCREMENT PRIMARY KEY)"
+          },
+          "txn_id": {
+            "type": "integer",
+            "description": "Reference to transaction being logged (FOREIGN KEY)"
+          },
+          "action": {
+            "type": "string",
+            "enum": ["INSERT", "UPDATE", "DELETE", "VIEW", "EXPORT"],
+            "description": "Action performed"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Log entry timestamp"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional log information"
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "User who performed the action (FOREIGN KEY)"
+          }
+        },
+        "required": ["log_id", "txn_id", "action", "timestamp"],
+        "example": {
+          "log_id": 1,
+          "txn_id": 1,
+          "action": "INSERT",
+          "timestamp": "2025-10-02T15:30:00Z",
+          "notes": "Imported from XML parser",
+          "user_id": 1
+        }
+      }
     },
-    "counterparty": {
-      "user_id": 2,
-      "name": "Bob",
-      "phone": "0788000002"
+    "api_response_formats": {
+      "current_api_format": {
+        "description": "Current API response format (simplified for frontend)",
+        "example": {
+          "id": "1",
+          "transaction_id": "73214484437",
+          "transaction_type": "payment",
+          "amount": 1000.0,
+          "sender": "You",
+          "receiver": "Jane Smith",
+          "timestamp": "2024-05-10T16:31:46.754000",
+          "status": "completed",
+          "raw_message": "TxId: 73214484437. Your payment of 1,000 RWF...",
+          "created_at": "2025-10-02T09:17:51.561050"
+        }
+      },
+      "database_compliant_format": {
+        "description": "Full database-compliant transaction format",
+        "example": {
+          "txn_id": 1,
+          "sender_id": 1,
+          "receiver_id": 2,
+          "amount": 15000.00,
+          "txn_date": "2025-10-02T15:30:00Z",
+          "category_id": 1,
+          "status": "completed",
+          "raw_message": "Your payment of 15,000 RWF to Jane Smith...",
+          "created_at": "2025-10-02T15:30:00Z",
+          "updated_at": "2025-10-02T15:30:00Z"
+        }
+      }
+    },
+    "database_to_json_mapping": {
+      "description": "Direct mapping between SQL tables and JSON schemas",
+      "Users": {
+        "json_schema": "user",
+        "sql_to_json": {
+          "user_id": "user_id",
+          "name": "name", 
+          "phone": "phone",
+          "email": "email",
+          "created_at": "created_at"
+        }
+      },
+      "Transaction_Categories": {
+        "json_schema": "transaction_category",
+        "sql_to_json": {
+          "cat_id": "cat_id",
+          "cat_name": "cat_name",
+          "description": "description",
+          "is_active": "is_active",
+          "created_at": "created_at"
+        }
+      },
+      "Transactions": {
+        "json_schema": "transaction", 
+        "sql_to_json": {
+          "txn_id": "txn_id",
+          "sender_id": "sender_id",
+          "receiver_id": "receiver_id",
+          "amount": "amount",
+          "txn_date": "txn_date",
+          "category_id": "category_id",
+          "status": "status",
+          "raw_message": "raw_message",
+          "created_at": "created_at",
+          "updated_at": "updated_at"
+        }
+      },
+      "System_Logs": {
+        "json_schema": "system_log",
+        "sql_to_json": {
+          "log_id": "log_id",
+          "txn_id": "txn_id",
+          "action": "action",
+          "timestamp": "timestamp", 
+          "notes": "notes",
+          "user_id": "user_id"
+        }
+      }
+    },
+    "sample_data_examples": {
+      "minimal_transaction": {
+        "description": "Minimum required fields for API",
+        "data": {
+          "sender": "Alice Johnson",
+          "receiver": "Bob Smith",
+          "amount": 5000.0,
+          "transaction_type": "payment",
+          "status": "completed"
+        }
+      },
+      "sms_transaction_types": {
+        "description": "Real transaction types from SMS parsing",
+        "types": {
+          "payment": "Your payment to someone (You → Other)",
+          "transfer": "Direct transfer to someone (You → Other)", 
+          "received": "Money received from someone (Other → You)",
+          "deposit": "Bank deposit (Bank → You)",
+          "airtime": "Airtime purchase (You → Service)",
+          "withdrawal": "Cash withdrawal (You → ATM/Agent)"
+        }
+      }
     }
-  },
-  "logs": [
-    {
-      "log_id": 1,
-      "action": "INSERT",
-      "timestamp": "2025-09-18T15:01:00Z",
-      "notes": "Imported from XML"
-    }
-  ]
+  }
 }
